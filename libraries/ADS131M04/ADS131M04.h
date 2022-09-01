@@ -54,13 +54,13 @@ class ADS131M04 {
     public:
 
     SPIClass * spi = NULL; // SPISettings(spiClk, MSBFIRST, SPI_MODE1)
-    int CS, DRDY;
+    int csPIN, DRDY;
     int SpiClk;
 
     bool firstRead = true;
     int nFrameWords = 10;
     // Dummy word frame to write ADC during ADC data reads
-    ADS131M04(int cs=5, SPIClass* _spi, int8_t _clkoutPin, int drdy=12, int clk = 2000000);
+    ADS131M04(int cs, SPIClass* _spi, int8_t _clkoutPin, int clk);
     void init(int clkin = 8192000);
     void readChannels(int8_t * channelArrPtr, int8_t channelArrLen, int32_t * outputArrPtr);
     void readAllChannels(int32_t inputArr[4]);

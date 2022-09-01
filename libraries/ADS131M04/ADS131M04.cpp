@@ -1,12 +1,11 @@
 #include "ADS131M04.h"
 
-ADS131M04::ADS131M04(int cs, SPIClass* spi, int8_t clkoutPin, int drdy, int clk) {
+ADS131M04::ADS131M04(int cs, SPIClass* _spi, int8_t clkoutPin, int clk) {
 
-    csPin = cs;
-    DRDY = drdy; //You don't have to use DRDY, can also read off the ADS131_STATUS register.
+    csPIN = cs; 
     SpiClk = clk;
-    *SPI = spi;
-    CLKOUTPIN = clkoutPin,
+    spi = _spi;
+    DRDY = clkoutPin; //You don't have to use DRDY, can also read off the ADS131_STATUS register.
 }
 
 void ADS131M04::init(int clkin) {
@@ -18,14 +17,6 @@ void ADS131M04::init(int clkin) {
     pinMode(DRDY, INPUT_PULLUP);
     
     spi->begin();
-
-    Serial.println("Setting oscillator");
-
-    ledcSetup(2, clkin, 2);
-    ledcWrite(2,2);
-
-    Serial.println("SPI Ready...");
-
 }
 
 void ADS131M04::readChannels(int8_t * channelArrPtr, int8_t channelArrLen, int32_t * outputArrPtr) {
@@ -230,7 +221,7 @@ bool ADS131M04::setGain(int gain) { // apply gain to all channels (1 to 128, bas
         return false;
     }
     writeReg(ADS131_GAIN1, writegain);
-    writeReg(ADS131_GAIN2, writegain);
+    //writeReg(ADS131_GAIN2, writegain);
 
     return true;
 }

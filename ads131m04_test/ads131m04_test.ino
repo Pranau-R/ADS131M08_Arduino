@@ -1,4 +1,4 @@
-#include "ADS131M08.h"
+#include <ADS131M04.h>
 #include <Catena.h>
 #include <SPI.h>
 
@@ -18,7 +18,7 @@ SPIClass gSPI2(
 
 int CLKOUT  =                 8192000; //XTAL speed (50% duty cycle PWM)
 
-ADS131M08 adc(CS_PIN, DRDY_PIN, 8192000);
+ADS131M04 adc(CS_PIN, &gSPI2, DRDY_PIN, 8192000);
 
 unsigned long long sampleNum = 0;
 char outputarr[128];
@@ -106,7 +106,7 @@ void loop() {
               channelArr[0], 
               channelArr[1], 
               channelArr[2],
-              channelArr[3],
+              channelArr[3]
               );
               
     Serial.print(outputarr);
