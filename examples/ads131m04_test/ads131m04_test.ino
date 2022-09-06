@@ -24,7 +24,7 @@ void setup()
     {
     // put your setup code here, to run once:
     gCatena.begin();
-    
+
     gSPI2.begin();
 
     Serial.begin(1000000);
@@ -39,7 +39,7 @@ void setup()
     delay(1);
     digitalWrite(RESET, HIGH);*/
 
-    adc.writeReg(ADS131_CLOCK, 0b1111111100011010); //Clock register (page 55 in datasheet)
+    adc.writeReg(ADS131_CLOCK, 0b111100011010); //Clock register (page 55 in datasheet)
     //Serial.println("After write reg");
     /*CLOCK REG SETTINGS
     * Bytes 15-8: ADC Channel enable/disable
@@ -50,16 +50,22 @@ void setup()
     * Bytes 1-0: Power mode selections 11 or 10 = high resolution, 01 = low power, 00 = very low power
     */
 
-    //adc.writeReg(ADS131_CFG,0b0000000000000000);
+    delay(100);
+
+    adc.writeReg(ADS131_CFG,0b0000000000000000);
+    delay(100);
 
     //DC Block Filter settings:
     //adc.writeReg(ADS131_THRSHLD_LSB,0b0000000000001010);
+    //delay(100);
 
     //Channel settings
-    //adc.writeReg(ADS131_CH0_CFG,0b0000000000000000);
+    adc.writeReg(ADS131_CH0_CFG,0b0000000000000000);
+    delay(100);
 
     //Gain settings, 1-128 (increasing by factor of 2)
-    adc.setGain(2);
+    adc.setGain(1);
+    delay(100);
 
     //Serial.println("After set gain");
 
@@ -67,26 +73,26 @@ void setup()
 
     //Serial.println("After read reg");
 
-    Serial.print("CLOCK: ");
-    Serial.println(clkreg,BIN);
-    
-    uint16_t gainreg = adc.readReg(ADS131_GAIN1);
-    Serial.print("GAIN: ");
-    Serial.println(gainreg, BIN);
-    
-    //adc.globalChop(true,2);
-    
-    uint16_t id = adc.readReg(ADS131_ID);
-    Serial.print("ID: ");
-    Serial.println(id, BIN);
-    
-    uint16_t stat = adc.readReg(ADS131_STATUS);
-    Serial.print("Status: ");
-    Serial.println(stat, BIN);
+    /*Serial.print("CLOCK: 0x");
+    Serial.println(clkreg,HEX);*/
 
-    uint16_t Mode = adc.readReg(ADS131_MODE);
-    Serial.print("Mode: ");
-    Serial.println(Mode, BIN);
+    uint16_t gainreg = adc.readReg(ADS131_GAIN1);
+    Serial.print("GAIN: 0x");
+    Serial.println(gainreg, HEX);
+
+    //adc.globalChop(true,2);
+
+    /*uint16_t id = adc.readReg(ADS131_ID);
+    Serial.print("ID: 0x");
+    Serial.println(id, HEX);*/
+
+    /*uint16_t stat = adc.readReg(ADS131_STATUS);
+    Serial.print("STATUS: 0x");
+    Serial.println(stat, HEX);*/
+
+    /*uint16_t Mode = adc.readReg(ADS131_MODE);
+    Serial.print("MODE: 0x");
+    Serial.println(Mode, HEX);*/
 
     Serial.println("Starting in 3...");
     delay(1000);
@@ -117,12 +123,13 @@ void loop()
         Serial.print("CH0: ");
         Serial.println(adc.readChannelSingle(channel), HEX);
 
-        Serial.print("Write Success? [1]Yes [0]No :");
-        Serial.println(adc.writeReg(0x04,0x6767));
+        Serial.print("Write Success? :");
+        Serial.println(adc.writeReg(0x04,0x0000) ? "YES" : "NO");
+        delay(100);
         Serial.print("Reading: 0x00");
         Serial.println(adc.readReg(0x04), HEX);
         Serial.println("#######################");
-        
+
         delay(1000);
         }
     else
